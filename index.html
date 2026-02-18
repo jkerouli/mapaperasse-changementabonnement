@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MaPaperasse — Gérer mon abonnement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --card:#ffffff;
+      --text:#0b1220;
+      --muted:#5b667a;
+      --line:#e7edf6;
+      --line2:#dfe7f3;
+      --brand:#1f6fff;
+      --brandSoft: rgba(31,111,255,.12);
+      --navy:#0d1b3a;
+      --mint:#2ee6c6;
+      --danger:#ef4444;
+      --warn:#f59e0b;
+      --shadow: 0 16px 40px rgba(11,18,32,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1100px 650px at 65% -10%, rgba(46,230,198,.10), transparent 50%),
+                  radial-gradient(900px 500px at 15% 0%, rgba(31,111,255,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1180px;margin:28px auto;padding:0 16px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:12px 14px;border:1px solid var(--line);
+      background:rgba(255,255,255,.72);backdrop-filter: blur(10px);
+      border-radius:999px;
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+    .logo{
+      width:34px;height:34px;border-radius:10px;
+      background: linear-gradient(135deg, var(--mint), rgba(31,111,255,.85));
+      box-shadow: 0 10px 26px rgba(31,111,255,.22);
+    }
+    .topActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;color:var(--muted);
+      font-size:12px;font-weight:600;
+    }
+    .pill strong{color:var(--text);font-weight:800}
+    .hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin:18px 0 14px}
+    h1{margin:0;font-size:22px;letter-spacing:-.3px}
+    .sub{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    .panel{
+      background:rgba(255,255,255,.76);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelHeader{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.65));
+    }
+    .panelHeaderTitle{margin:0;font-size:14px;font-weight:800;letter-spacing:-.15px}
+    .panelHeaderMeta{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.35}
+    .panelBody{padding:12px 14px 14px}
+    .section{padding:12px 0;border-top:1px dashed var(--line2)}
+    .section:first-child{border-top:none;padding-top:0}
+    .sectionTitle{
+      margin:0 0 10px;
+      font-size:12px;color:var(--muted);font-weight:800;
+      letter-spacing:.18px;text-transform:uppercase;
+    }
+    .row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0}
+    .row label{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text);font-weight:700}
+    .row label span{display:block}
+    .row label small{display:block;color:var(--muted);font-weight:600;font-size:12px;margin-top:2px;line-height:1.25}
+    input[type="checkbox"]{width:16px;height:16px;accent-color: var(--brand);margin-top:2px}
+    .select{
+      width: 175px;
+      padding:10px 10px;
+      border-radius:12px;border:1px solid var(--line);
+      background:#fff;color:var(--text);
+      font-size:13px;font-weight:800;
+      outline:none;
+    }
+    .hint{
+      margin-top:10px;
+      font-size:12px;color:var(--muted);line-height:1.35;
+      background:rgba(31,111,255,.06);
+      border:1px solid rgba(31,111,255,.16);
+      padding:10px 10px;border-radius:12px;
+    }
+    .notice{
+      margin-top:10px;
+      font-size:12px;line-height:1.35;
+      background: rgba(245,158,11,.10);
+      border:1px solid rgba(245,158,11,.25);
+      padding:10px;border-radius:12px;
+      color:#6b4c12;
+      font-weight:700;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    .card{
+      background:rgba(255,255,255,.86);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      position:relative;
+      overflow:hidden;
+      min-height: 560px;
+    }
+    .card::before{
+      content:"";
+      position:absolute;inset:-2px;
+      background: radial-gradient(500px 220px at 70% 0%, rgba(46,230,198,.12), transparent 60%),
+                  radial-gradient(500px 220px at 20% 0%, rgba(31,111,255,.12), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .card > *{position:relative}
+    .selected{
+      border:2px solid var(--brand);
+      box-shadow: 0 0 0 5px var(--brandSoft), var(--shadow);
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 10px;border-radius:999px;
+      font-size:12px;font-weight:900;
+      background: var(--navy);color:#fff;
+    }
+    .badge.mint{background: linear-gradient(90deg, rgba(46,230,198,.95), rgba(31,111,255,.88));}
+    .badge.soft{
+      background:#fff;color:var(--navy);
+      border:1px solid var(--line2);
+      font-weight:900;
+    }
+    .badge.danger{
+      background: rgba(239,68,68,.95);
+    }
+    .title{margin:10px 0 6px;font-size:18px;font-weight:950;letter-spacing:-.2px}
+    .desc{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.35;min-height:34px;font-weight:600}
+    .price{display:flex;align-items:baseline;gap:8px;margin:8px 0 2px}
+    .price strong{font-size:34px;font-weight:950;letter-spacing:-.7px}
+    .price span{color:var(--muted);font-size:12px;font-weight:800}
+    .btn{
+      width:100%;
+      padding:12px 12px;border-radius:14px;
+      border:1px solid var(--navy);
+      background: var(--navy);
+      color:#fff;font-weight:950;
+      cursor:pointer;
+      margin:10px 0 10px;
+    }
+    .btn.ghost{
+      background:#fff;color:var(--navy);
+      border:1px solid var(--line2);
+    }
+    .btn.danger{
+      background:#fff;
+      color: var(--danger);
+      border:1px solid rgba(239,68,68,.35);
+    }
+    .kpis{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    .tag{
+      font-size:12px;font-weight:900;color:var(--muted);
+      padding:7px 10px;border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .hr{height:1px;background:var(--line);margin:10px 0}
+    ul{margin:0;padding:0 0 0 18px}
+    li{margin:8px 0;color:var(--muted);font-size:13px;line-height:1.25;font-weight:700}
+    .foot{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;line-height:1.35;
+      border-top:1px solid var(--line);
+      padding-top:10px;
+      font-weight:700;
+    }
+
+    .usage{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:8px;
+    }
+    .meter{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:10px;
+    }
+    .meterTop{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      font-size:12px;font-weight:900;color:var(--muted);
+      margin-bottom:8px;
+    }
+    .bar{
+      height:10px;border-radius:999px;background:rgba(31,111,255,.10);
+      overflow:hidden;border:1px solid rgba(31,111,255,.10);
+    }
+    .bar > div{
+      height:100%;
+      background: linear-gradient(90deg, rgba(46,230,198,.95), rgba(31,111,255,.88));
+      width:0%;
+      transition: width .25s ease;
+    }
+    .meterBottom{
+      margin-top:8px;font-size:12px;color:var(--muted);font-weight:700;line-height:1.25;
+    }
+
+    .modalWrap{
+      position:fixed;inset:0;
+      background: rgba(11,18,32,.52);
+      display:none;
+      align-items:center;justify-content:center;
+      padding:16px;
+    }
+    .modal{
+      width:min(620px, 100%);
+      background:#fff;
+      border-radius:18px;
+      border:1px solid var(--line);
+      box-shadow: 0 22px 70px rgba(11,18,32,.25);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .modalHeadTitle{
+      font-weight:950;letter-spacing:-.25px;font-size:14px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .x{
+      border:1px solid var(--line);
+      background:#fff;
+      width:36px;height:36px;border-radius:12px;
+      cursor:pointer;font-weight:950;color:var(--muted);
+    }
+    .modalBody{padding:12px 14px 14px}
+    .modalText{
+      color:var(--muted);font-size:13px;line-height:1.4;font-weight:700;margin:0 0 10px;
+    }
+    .modalBox{
+      border:1px solid rgba(245,158,11,.25);
+      background: rgba(245,158,11,.10);
+      border-radius:14px;
+      padding:10px;
+      color:#6b4c12;
+      font-size:12px;
+      font-weight:800;
+      line-height:1.35;
+      margin:10px 0 12px;
+    }
+    .modalActions{display:flex;gap:10px;flex-wrap:wrap}
+    .modalActions button{
+      flex:1;
+      min-width: 200px;
+      padding:12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:950;
+      border:1px solid var(--line2);
+      background:#fff;color:var(--navy);
+    }
+    .modalActions .confirm{
+      border:1px solid rgba(239,68,68,.35);
+      color: var(--danger);
+    }
+
+    @media (max-width:1100px){
+      .grid{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr}
+      .card{min-height:auto}
+      .topbar{border-radius:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>MaPaperasse</div>
+      </div>
+      <div class="topActions">
+        <div class="pill">Plan actuel : <strong id="pillPlan">Campus</strong></div>
+        <div class="pill">Renouvellement : <strong id="pillRenew">29/02/2026</strong></div>
+        <div class="pill">Mode : <strong id="pillMode">PREMIUM</strong></div>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1>Gérer mon abonnement</h1>
+        <div class="sub">Modifiez vos volumes, upgradez vers une offre sur mesure, ou programmez un downgrade en fin de période.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panelHeader">
+          <div class="panelHeaderTitle">Paramètres de votre plan</div>
+          <div class="panelHeaderMeta">Vos changements de volumes s’appliquent immédiatement. Le downgrade s’applique en fin de période.</div>
+        </div>
+
+        <div class="panelBody">
+          <div class="section">
+            <div class="sectionTitle">Volumes (actifs)</div>
+            <div class="row">
+              <label>
+                <span>Dossiers formateurs inclus</span>
+                <small>Détermine la capacité du suivi profil + conformité session.</small>
+              </label>
+              <select class="select" id="dossiers">
+                <option value="10">10 dossiers</option>
+                <option value="25">25 dossiers</option>
+                <option value="50">50 dossiers</option>
+                <option value="100">100 dossiers</option>
+                <option value="illimite" selected>Illimité</option>
+              </select>
+            </div>
+            <div class="row">
+              <label>
+                <span>Sessions / an incluses</span>
+                <small>Conformité contractuelle par session (dates & alertes contextualisées).</small>
+              </label>
+              <select class="select" id="sessions">
+                <option value="25" selected>25 sessions / an</option>
+                <option value="75">75 sessions / an</option>
+                <option value="150">150 sessions / an</option>
+                <option value="illimite">Illimité</option>
+              </select>
+            </div>
+
+            <div class="usage">
+              <div class="meter">
+                <div class="meterTop">
+                  <span>Dossiers utilisés</span>
+                  <span id="usedDossiersTxt">7 / 10</span>
+                </div>
+                <div class="bar"><div id="usedDossiersBar"></div></div>
+                <div class="meterBottom" id="usedDossiersNote">Suivi profil + archives. Les alertes PREMIUM restent par session.</div>
+              </div>
+
+              <div class="meter">
+                <div class="meterTop">
+                  <span>Sessions utilisées</span>
+                  <span id="usedSessionsTxt">6 / 25</span>
+                </div>
+                <div class="bar"><div id="usedSessionsBar"></div></div>
+                <div class="meterBottom" id="usedSessionsNote">Seules les sessions actives/futures alimentent les alertes (anti-bruit).</div>
+              </div>
+            </div>
+
+            <div class="hint" id="volumeHint">
+              Astuce : pour des volumes très élevés, l’offre Groupe est plus adaptée (illimité + options sur mesure).
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="sectionTitle">Logique d’alertes (PREMIUM)</div>
+            <div class="row">
+              <label>
+                <input id="filterEssential" type="checkbox" checked>
+                <span>Filtre de criticité : documents essentiels</span>
+              </label>
+            </div>
+            <div class="row">
+              <label>
+                <input id="filterSoon" type="checkbox" checked>
+                <span>Filtre de criticité : session proche (J-30 / J-7)</span>
+              </label>
+            </div>
+            <div class="row">
+              <label>
+                <input id="filterSlow" type="checkbox" checked>
+                <span>Filtre de criticité : formateur habituellement lent</span>
+              </label>
+            </div>
+            <div class="hint">
+              Un seul espace “Dossiers incomplets”, puis des filtres de criticité, évite le double comptage et accélère la prise de décision.
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="sectionTitle">Options sur mesure</div>
+            <div class="row">
+              <label><input id="trainerDb" type="checkbox"> <span>Base de données formateurs</span></label>
+            </div>
+            <div class="row">
+              <label><input id="advancedAi" type="checkbox"> <span>Fonctions IA avancées</span></label>
+            </div>
+            <div class="row">
+              <label><input id="coordinator" type="checkbox"> <span>Coordinateur dédié</span></label>
+            </div>
+            <div class="row">
+              <label><input id="prioritySupport" type="checkbox"> <span>Support prioritaire & dédié</span></label>
+            </div>
+            <div class="notice" id="surMesureNote">
+              Toute option “sur mesure” mettra en avant l’offre Groupe.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card" id="cardEtab">
+          <span class="badge soft">Downgrade</span>
+          <div class="title">Établissement</div>
+          <div class="desc">Conformité globale par profil. Pas de sessions (pas de conformité par dates).</div>
+
+          <div class="price"><strong id="priceEtab">—</strong><span>HT/mois</span></div>
+          <button class="btn danger" id="btnDowngrade" type="button">Programmer le downgrade</button>
+
+          <div class="kpis" id="kpiEtab"></div>
+          <div class="hr"></div>
+          <ul id="listEtab"></ul>
+          <div class="foot" id="footEtab"></div>
+        </div>
+
+        <div class="card selected" id="cardCampus">
+          <span class="badge mint">Plan actuel</span>
+          <div class="title">Campus</div>
+          <div class="desc">Conformité contractuelle par session. Alertes contextualisées, anti-bruit.</div>
+
+          <div class="price"><strong id="priceCampus">—</strong><span>HT/mois</span></div>
+          <button class="btn ghost" id="btnVolumes" type="button">Mettre à jour les volumes</button>
+
+          <div class="kpis" id="kpiCampus"></div>
+          <div class="hr"></div>
+          <ul id="listCampus"></ul>
+          <div class="foot" id="footCampus"></div>
+        </div>
+
+        <div class="card" id="cardGroupe">
+          <span class="badge">Upgrade</span>
+          <div class="title">Groupe</div>
+          <div class="desc">Illimité + options sur mesure, adapté aux grands organismes.</div>
+
+          <div class="price"><strong id="priceGroupe">Sur mesure</strong><span>Tarif personnalisé</span></div>
+          <button class="btn" id="btnUpgrade" type="button">Nous contacter</button>
+
+          <div class="kpis" id="kpiGroupe"></div>
+          <div class="hr"></div>
+          <ul id="listGroupe"></ul>
+          <div class="foot" id="footGroupe"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalWrap" id="modalWrap" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalHead">
+        <div class="modalHeadTitle" id="modalTitle">Programmer un downgrade</div>
+        <button class="x" id="btnClose" type="button">×</button>
+      </div>
+      <div class="modalBody">
+        <p class="modalText">
+          Vous êtes actuellement sur Campus (PREMIUM). Le downgrade vers Établissement s’appliquera en fin de période.
+        </p>
+        <div class="modalBox" id="downgradeBox">
+          En fin de période :
+          - les sessions passent en lecture seule
+          - les alertes redeviennent globales (profil)
+          - aucune donnée n’est supprimée (archives conservées)
+        </div>
+        <div class="modalActions">
+          <button type="button" id="btnCancel">Annuler</button>
+          <button type="button" class="confirm" id="btnConfirm">Confirmer le downgrade</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const el = (id) => document.getElementById(id);
+
+  const PRICE_ETAB = { "10":29, "25":49, "50":89, "100":149, "illimite":459 };
+  const CAMPUS_PRICES = { base:35, mid:99, high:189 };
+
+  const dossiersLabel = (k) => (k==="illimite" ? "Illimité" : k + " dossiers");
+  const sessionsLabel = (k) => (k==="illimite" ? "Illimité" : k + " sessions/an");
+
+  function campusPrice(dKey, sKey){
+    const d = (dKey==="illimite") ? Infinity : Number(dKey);
+    const s = (sKey==="illimite") ? Infinity : Number(sKey);
+    if (!isFinite(d) || !isFinite(s)) return null;
+    if (d<=10 && s<=25) return CAMPUS_PRICES.base;
+    if (d<=25 && s<=75) return CAMPUS_PRICES.mid;
+    return CAMPUS_PRICES.high;
+  }
+
+  function setList(listId, items){
+    const ul = el(listId);
+    ul.innerHTML = "";
+    items.forEach(t => {
+      const li = document.createElement("li");
+      li.textContent = t;
+      ul.appendChild(li);
+    });
+  }
+
+  function setKpis(kpiId, items){
+    const box = el(kpiId);
+    box.innerHTML = "";
+    items.forEach(t => {
+      const span = document.createElement("span");
+      span.className = "tag";
+      span.textContent = t;
+      box.appendChild(span);
+    });
+  }
+
+  function clampPct(x){
+    if (x < 0) return 0;
+    if (x > 100) return 100;
+    return x;
+  }
+
+  function render(){
+    const dossiersKey = el("dossiers").value;
+    const sessionsKey = el("sessions").value;
+
+    const etabPrice = PRICE_ETAB[dossiersKey] ?? 49;
+    const cPrice = campusPrice(dossiersKey, sessionsKey);
+
+    el("priceEtab").textContent = etabPrice + "€";
+    el("priceCampus").textContent = (cPrice===null ? "Sur mesure" : (cPrice + "€"));
+
+    setKpis("kpiEtab", [
+      "Sans sessions",
+      "Statut global",
+      "Moins contractuel"
+    ]);
+
+    setKpis("kpiCampus", [
+      "Plan PREMIUM",
+      "Alertes par session",
+      "Anti-bruit"
+    ]);
+
+    setKpis("kpiGroupe", [
+      "Illimité",
+      "Sur mesure",
+      "Options avancées"
+    ]);
+
+    setList("listEtab", [
+      "Dossiers formateurs",
+      "Alertes d’expiration (globales)",
+      "Statut global OK/KO (sans dates)",
+      "Export des données"
+    ]);
+
+    const filters = [];
+    if (el("filterEssential").checked) filters.push("Criticité : documents essentiels");
+    if (el("filterSoon").checked) filters.push("Criticité : sessions proches");
+    if (el("filterSlow").checked) filters.push("Criticité : formateurs lents");
+
+    setList("listCampus", [
+      "Dossiers formateurs + archives (versionning)",
+      "Sessions (dates/statut/type)",
+      "Conformité par dates (par session)",
+      "Alertes contextualisées (sessions actives/futures)",
+      "Dossiers incomplets + filtres de criticité",
+      ...filters
+    ]);
+
+    const sm = {
+      trainerDb: el("trainerDb").checked,
+      advancedAi: el("advancedAi").checked,
+      coordinator: el("coordinator").checked,
+      prioritySupport: el("prioritySupport").checked
+    };
+
+    setList("listGroupe", [
+      "Dossiers & sessions illimités",
+      sm.coordinator ? "Coordinateur dédié" : "Coordinateur dédié (option)",
+      sm.trainerDb ? "Base de données formateurs" : "Base de données formateurs (option)",
+      sm.advancedAi ? "Fonctions IA avancées" : "Fonctions IA avancées (option)",
+      sm.prioritySupport ? "Support prioritaire & dédié" : "Support prioritaire & dédié (option)"
+    ]);
+
+    const needsGroupe = (dossiersKey==="illimite") || (sessionsKey==="illimite") ||
+      sm.trainerDb || sm.advancedAi || sm.coordinator || sm.prioritySupport;
+
+    el("cardGroupe").classList.toggle("selected", needsGroupe);
+    el("cardCampus").classList.toggle("selected", !needsGroupe);
+
+    el("pillPlan").textContent = "Campus";
+    el("pillMode").textContent = "PREMIUM";
+
+    const usedDossiers = 7;
+    const usedSessions = 6;
+
+    const dCap = (dossiersKey==="illimite") ? Infinity : Number(dossiersKey);
+    const sCap = (sessionsKey==="illimite") ? Infinity : Number(sessionsKey);
+
+    el("usedDossiersTxt").textContent = (dCap===Infinity) ? (usedDossiers + " / ∞") : (usedDossiers + " / " + dCap);
+    el("usedSessionsTxt").textContent = (sCap===Infinity) ? (usedSessions + " / ∞") : (usedSessions + " / " + sCap);
+
+    const dPct = (dCap===Infinity) ? 18 : (usedDossiers / dCap) * 100;
+    const sPct = (sCap===Infinity) ? 22 : (usedSessions / sCap) * 100;
+
+    el("usedDossiersBar").style.width = clampPct(dPct) + "%";
+    el("usedSessionsBar").style.width = clampPct(sPct) + "%";
+
+    el("footEtab").textContent = "Le downgrade s’applique en fin de période. Les sessions existantes restent accessibles en lecture seule.";
+    el("footCampus").textContent = needsGroupe
+      ? "Vos besoins indiquent une offre Groupe. Le plan actuel reste actif tant que vous ne changez pas."
+      : "Vos volumes restent dans les paliers. Les changements de volumes s’appliquent immédiatement.";
+    el("footGroupe").textContent = "Une offre sur mesure est recommandée pour les gros volumes et options avancées.";
+
+    el("volumeHint").textContent = needsGroupe
+      ? "Vos choix orientent vers Groupe. Vous pouvez rester sur Campus ou demander une offre sur mesure."
+      : "Vous êtes dans les paliers Campus. Ajustez les volumes à tout moment.";
+
+    const renew = new Date();
+    renew.setDate(renew.getDate() + 11);
+    const dd = String(renew.getDate()).padStart(2,"0");
+    const mm = String(renew.getMonth()+1).padStart(2,"0");
+    const yyyy = renew.getFullYear();
+    el("pillRenew").textContent = dd + "/" + mm + "/" + yyyy;
+  }
+
+  function openModal(){
+    el("modalWrap").style.display = "flex";
+    el("modalWrap").setAttribute("aria-hidden","false");
+  }
+  function closeModal(){
+    el("modalWrap").style.display = "none";
+    el("modalWrap").setAttribute("aria-hidden","true");
+  }
+
+  el("btnDowngrade").addEventListener("click", openModal);
+  el("btnClose").addEventListener("click", closeModal);
+  el("btnCancel").addEventListener("click", closeModal);
+
+  el("btnConfirm").addEventListener("click", () => {
+    closeModal();
+    el("btnDowngrade").textContent = "Downgrade programmé";
+    el("btnDowngrade").disabled = true;
+    el("btnDowngrade").style.cursor = "not-allowed";
+    el("btnDowngrade").style.opacity = "0.75";
+  });
+
+  el("btnVolumes").addEventListener("click", () => {
+    el("btnVolumes").textContent = "Volumes mis à jour";
+    setTimeout(() => { el("btnVolumes").textContent = "Mettre à jour les volumes"; }, 1600);
+  });
+
+  el("btnUpgrade").addEventListener("click", () => {
+    el("btnUpgrade").textContent = "Demande envoyée";
+    setTimeout(() => { el("btnUpgrade").textContent = "Nous contacter"; }, 1600);
+  });
+
+  ["dossiers","sessions","filterEssential","filterSoon","filterSlow","trainerDb","advancedAi","coordinator","prioritySupport"]
+    .forEach(id => el(id).addEventListener("change", render));
+
+  render();
+</script>
+</body>
+</html>
